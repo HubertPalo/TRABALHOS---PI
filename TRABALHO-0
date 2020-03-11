@@ -1,0 +1,129 @@
+import matplotlib.pyplot as plt
+from PIL import Image
+import numpy as np
+import scipy.linalg as linalg
+import math
+
+rows = 4
+columns = 4
+globalFigure = plt.figure()
+
+def showImage(image, order):
+    globalFigure.add_subplot(rows,columns,order).title.set_text('TEST')
+    # globalFigure.suptitle('TEST')
+    plt.imshow(image, cmap='gray', vmin = 0, vmax = 255)
+
+def showImage2(figure, image, rows, columns, order):
+    figure.add_subplot(rows,columns,order).title.set_text('TEST')
+    # globalFigure.suptitle('TEST')
+    plt.imshow(image, cmap='gray', vmin = 0, vmax = 255)
+
+def process11(image):
+    # copy = np.copy(image)
+    # copy = 255 - copy
+    # print(np.matrix(copy))
+    return np.matrix(255 - image)
+
+def process12(image):
+    max = 200
+    min = 100
+    copy = (max - min) * image / 2
+    print(np.matrix.round(copy).astype(int))
+    return np.matrix.round(((max - min) * image) / 2).astype(int) + 100
+
+def process13(image):
+    image[::2] = 0
+    return image
+
+def process2(image):
+    gamma = 2
+    processFigure = plt.figure()
+    showImage2(processFigure, image, 1, 3, 1)
+    #image = image / 255
+    for i in range(len(image)):
+        for j in range(len(image[i])):
+            #print('CASE--START')
+            #print(image[i][j])
+            temporal = image[i][j] / 255.0
+            #print(image[i][j])
+            temporal = math.pow(temporal, 1/gamma)
+            image[i][j] = (temporal * 255)
+            #print('CASE--END')
+    print(image)
+    image = np.matrix.round(image).astype(int)
+    print(image)
+    showImage2(processFigure, image, 1, 3, 2)
+    #print('MIN-' + str(np.min(image)))
+    #print('MAX-' + str(np.max(image)))
+    #print('CHECK THIS')
+    #print(math.pow(0.23423, 0.234234))
+    #arraya = [0.123, 0.421]
+    #for i in range(len(arraya)):
+    #    arraya[i] = math.pow(arraya[i], 1/2.5)
+    #asd = np.matrix.flatten(image)
+    #print(arraya)
+    #image = linalg.fractional_matrix_power(asd, 1/gamma) 
+    #image = math.pow(asd, 1/gamma)
+
+    #a = [1, 3, 4]
+    #print(a ** 2)
+    #image = np.linalg.matrix_power(image, 1.13)
+    
+    print(np.matrix(image))
+    
+    #showImage2(processFigure, image, 1, 3, 2)
+    #image = image 
+def process3(image):
+    processFigure = plt.figure()
+    showImage2(processFigure, image, 4, 1, 1)
+    determinants = [4, 8, 16, 32, 64, 128]
+    for i in range(len(image)):
+        for j in range(len(image[i])):
+            #temp = bin(image[i][j])
+            #print(temp)
+            #temp = temp[7]
+            #image[i][j] = int(temp) * 255
+            
+            #temp = image[i][j] / 128
+            # print()
+            #temp = int(temp)
+            #print("DESPUES" + str(temp))
+            #image[i][j] = temp*255
+            temp2 = (image[i][j] & 0b10000000)
+            # print("ANTES: "+ str(bin(image[i][j])) + " - " + str(image[i][j]) + "DESPUES" + str(bin(temp2)) + " - " + str(temp2))
+            image[i][j] = (temp2) * 255
+    showImage2(processFigure, image, 4, 4, 5)
+    
+
+def main():
+    print('Hello world')
+    original = Image.open('baboon.png')
+    image = np.copy(original) #Image.open('baboon.png')
+    showImage(original, 1)
+    image = process11(np.copy(original))
+    showImage(image, 2)
+    image = process12(np.copy(original))
+    showImage(image, 3)
+    image = process13(np.copy(original))
+    showImage(image, 4)
+    process2(np.copy(original))
+    process3(np.copy(original))
+    #fig = plt.figure()
+    #fig.add_subplot(2,2,1)
+    #plt.imshow(original, cmap='gray', vmin = 0, vmax = 255)
+    #fig.add_subplot(2,2,2)
+    #image = process11(image)
+    #plt.imshow(image, cmap='gray', vmin = 0, vmax = 255)
+    #fig.add_subplot(2,2,3)
+    #image = process12(np.copy(original))
+    #plt.imshow(image, cmap='gray', vmin = 0, vmax = 255)
+    #fig.add_subplot(2,2,4)
+    #image = process13(np.copy(original))
+    #plt.imshow(image, cmap='gray', vmin = 0, vmax = 255)
+    #image.show()
+    plt.show(block=False)
+    plt.pause(5)
+    plt.close()
+    
+if __name__ == '__main__':
+    main()
